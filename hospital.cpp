@@ -22,6 +22,17 @@ public:
         next = NULL;
     }
 };
+class Appointment
+{
+public:
+    string doctorName;
+    string patientName;
+    Appointment(string DN, string PN)
+    {
+        doctorName = DN;
+        patientName = PN;
+    }
+};
 
 class queueForPatient
 {
@@ -192,6 +203,9 @@ public:
 
 class Doctor
 {
+private:
+    queue<Appointment> appointments;
+
 public:
     bool LoginDoc(string name, string password)
     {
@@ -293,11 +307,46 @@ public:
 
         cout << "Patient removed successfully!" << endl;
     }
+
+    void acceptAppointment()
+    {
+        ifstream file("PatientAppointments.txt");
+        ofstream tempFile("tempPatientAppointments.txt");
+
+        if (!file.is_open() || !tempFile.is_open())
+        {
+            cout << "Error opening files" << endl;
+            return;
+        }
+
+        string doctorName;
+        if (file >> doctorName)
+        {
+            cout << "Appointment scheduled with patient " << endl;
+        }
+        else
+        {
+            cout << "No appointments available for scheduling." << endl;
+            return;
+        }
+
+        while (file >> doctorName)
+        {
+            tempFile << doctorName << endl;
+        }
+
+        file.close();
+        tempFile.close();
+
+        remove("PatientAppointments.txt");
+        rename("tempPatientAppointments.txt", "PatientAppointments.txt");
+    }
 };
 class Patient
 {
 private:
     queue<queueForPatient> PatientQueues;
+    queue<Appointment> appointments;
 
 public:
     void EnquingPatient(const queueForPatient &patient)
@@ -390,6 +439,33 @@ public:
             File.close();
         }
     }
+
+    void requestAppointment(const string &doctorName)
+    {
+        Appointment newAppointment = {doctorName, "PatientName"};
+        appointments.push(newAppointment);
+        cout << "Appointment requested with Dr. " << doctorName << endl;
+    }
+
+    void printAppointmentsToFile()
+    {
+        ofstream file("PatientAppointments.txt");
+
+        if (file.is_open())
+        {
+            while (!appointments.empty())
+            {
+                file << "Dr. " << appointments.front().doctorName << " - Patient: " << appointments.front().patientName << endl;
+                appointments.pop();
+            }
+            file.close();
+            cout << "Appointments printed to PatientAppointments.txt" << endl;
+        }
+        else
+        {
+            cout << "Error opening file" << endl;
+        }
+    }
 };
 
 int main()
@@ -446,7 +522,8 @@ int main()
                     cout << "1. List of Doctors" << endl;
                     cout << "2. Queue of Patients" << endl;
                     cout << "3. DeQueue a patient from the line" << endl;
-                    cout << "4. Main Menu" << endl;
+                    cout << "4. Accept an appointment" << endl;
+                    cout << "5. Main Menu" << endl;
                     cout << "Press any key to exit from program" << endl;
 
                     cin >> choi;
@@ -470,7 +547,6 @@ int main()
 
                         do
                         {
-
                             doc.RemovePatient(name);
                             cout << "Remaining Patients: " << endl;
                             doc.PatientLine();
@@ -480,6 +556,11 @@ int main()
                         } while (cho == 'Y' || cho == 'y');
                     }
                     else if (choi == 4)
+                    {
+                        doc.acceptAppointment();
+                    }
+
+                    else if (choi == 5)
                     {
                         main();
                     }
@@ -548,7 +629,8 @@ int main()
                 cout << "         Enter your choice: " << endl;
                 cout << "1. Queue of Patients" << endl;
                 cout << "2. List of Doctors" << endl;
-                cout << "3. Main Menu" << endl;
+                cout << "3. Request an appointment" << endl;
+                cout << "4. Main Menu" << endl;
                 cout << "Press any key to exit from portal" << endl;
 
                 cin >> choi;
@@ -564,6 +646,24 @@ int main()
                 }
 
                 else if (choi == 3)
+                {
+                    string name;
+
+                    cout << "Enter name to request appointment: " << endl;
+                    cin >> name;
+
+                    char cho;
+                    do
+                    {
+                        PatientList.requestAppointment(name);
+                        PatientList.printAppointmentsToFile();
+                        cout << "Do you want to request another appointment?" << endl;
+                        cin >> cho;
+
+                    } while (cho == 'Y' || cho == 'y');
+                }
+
+                else if (choi == 4)
                 {
                     main();
                 }
@@ -591,7 +691,8 @@ int main()
                     cout << "         Enter your choice: " << endl;
                     cout << "1. Queue of Patients" << endl;
                     cout << "2. List of Doctors" << endl;
-                    cout << "3. Main Menu" << endl;
+                    cout << "3. Request an appointment" << endl;
+                    cout << "4. Main Menu" << endl;
                     cout << "Press any key to exit from portal" << endl;
 
                     cin >> choi;
@@ -605,8 +706,26 @@ int main()
                     {
                         PatientList.Doc_List();
                     }
-
                     else if (choi == 3)
+                    {
+                        string name;
+
+                        cout << "Enter name to request appointment: " << endl;
+                        cin >> name;
+
+                        char cho;
+                        do
+                        {
+                            PatientList.requestAppointment(name);
+                            PatientList.printAppointmentsToFile();
+
+                            cout << "Do you want to request another appointment?" << endl;
+                            cin >> cho;
+
+                        } while (cho == 'Y' || cho == 'y');
+                    }
+
+                    else if (choi == 4)
                     {
                         main();
                     }
@@ -872,4 +991,3 @@ int main()
     }
     return 0;
 }
- 
