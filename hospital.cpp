@@ -159,6 +159,35 @@ public:
             File.close();
         }
     }
+    void RemovePatient(string name)
+    {
+        ifstream inputFile("Doctor.txt");
+        ofstream outputFile("temp.txt");
+
+        if (!inputFile.is_open() || !outputFile.is_open())
+        {
+            cout << "Error opening files" << endl;
+            return;
+        }
+
+        string username, password;
+
+        while (inputFile >> username >> password)
+        {
+            if (username != name)
+            {
+                outputFile << username << " " << password << endl;
+            }
+        }
+
+        inputFile.close();
+        outputFile.close();
+
+        remove("Doctor.txt");
+        rename("temp.txt", "Doctor.txt");
+
+        cout << "Dr. " << username << "removed successfully!" << endl;
+    }
 };
 
 class Doctor
@@ -233,6 +262,36 @@ public:
             }
             File.close();
         }
+    }
+
+    void RemovePatient(string name)
+    {
+        ifstream inputFile("Patient.txt");
+        ofstream outputFile("temp.txt");
+
+        if (!inputFile.is_open() || !outputFile.is_open())
+        {
+            cout << "Error opening files" << endl;
+            return;
+        }
+
+        string username, password;
+
+        while (inputFile >> username >> password)
+        {
+            if (username != name)
+            {
+                outputFile << username << " " << password << endl;
+            }
+        }
+
+        inputFile.close();
+        outputFile.close();
+
+        remove("Patient.txt");
+        rename("temp.txt", "Patient.txt");
+
+        cout << "Patient removed successfully!" << endl;
     }
 };
 class Patient
@@ -386,7 +445,8 @@ int main()
                     cout << "                 Enter Your choice: " << endl;
                     cout << "1. List of Doctors" << endl;
                     cout << "2. Queue of Patients" << endl;
-                    cout << "3. Main Menu" << endl;
+                    cout << "3. DeQueue a patient from the line" << endl;
+                    cout << "4. Main Menu" << endl;
                     cout << "Press any key to exit from program" << endl;
 
                     cin >> choi;
@@ -399,6 +459,27 @@ int main()
                         doc.PatientLine();
                     }
                     else if (choi == 3)
+                    {
+                        doc.PatientLine();
+
+                        string name;
+                        char cho;
+
+                        cout << "Enter the name of patient to dequeue: ";
+                        cin >> name;
+
+                        do
+                        {
+
+                            doc.RemovePatient(name);
+                            cout << "Remaining Patients: " << endl;
+                            doc.PatientLine();
+
+                            cout << "Do you want to De Queue other patients?" << endl;
+                            cin >> cho;
+                        } while (cho == 'Y' || cho == 'y');
+                    }
+                    else if (choi == 4)
                     {
                         main();
                     }
@@ -594,7 +675,8 @@ int main()
                 cout << "                   Press the number: " << endl;
                 cout << "1. Register a doctor" << endl;
                 cout << "2. Display List of Doctors" << endl;
-                cout << "3. Main Menu" << endl;
+                cout << "3. Remove a doctor" << endl;
+                cout << "4. Main Menu" << endl;
                 cout << "Press any key to exit from portal" << endl;
 
                 cin >> choi;
@@ -630,6 +712,27 @@ int main()
                 }
                 else if (choi == 3)
                 {
+                    AdminList.DisplayDoc();
+
+                    string name;
+                    char cho;
+
+                    cout << "Enter the name of Doctor to remove: ";
+                    cin >> name;
+
+                    do
+                    {
+
+                        AdminList.RemovePatient(name);
+                        cout << "Remaining Doctors: " << endl;
+                        AdminList.DisplayDoc();
+
+                        cout << "Do you want to De Queue other patients?" << endl;
+                        cin >> cho;
+                    } while (cho == 'Y' || cho == 'y');
+                }
+                else if (choi == 4)
+                {
                     main();
                 }
                 else
@@ -657,7 +760,8 @@ int main()
                     cout << "                   Press the number: " << endl;
                     cout << "1. Register a doctor" << endl;
                     cout << "2. Display List of Doctors" << endl;
-                    cout << "3. Main Menu" << endl;
+                    cout << "3. Remove a doctor" << endl;
+                    cout << "4. Main Menu" << endl;
                     cout << "Press any key to exit from portal" << endl;
                     cin >> choi;
 
@@ -691,6 +795,27 @@ int main()
                         AdminList.DisplayDoc();
                     }
                     else if (choi == 3)
+                    {
+                        AdminList.DisplayDoc();
+
+                        string name;
+                        char cho;
+
+                        cout << "Enter the name of Doctor to remove: ";
+                        cin >> name;
+
+                        do
+                        {
+
+                            AdminList.RemovePatient(name);
+                            cout << "Remaining Doctors: " << endl;
+                            AdminList.DisplayDoc();
+
+                            cout << "Do you want to De Queue other patients?" << endl;
+                            cin >> cho;
+                        } while (cho == 'Y' || cho == 'y');
+                    }
+                    else if (choi == 4)
                     {
                         main();
                     }
