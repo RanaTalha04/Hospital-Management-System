@@ -186,7 +186,7 @@ public:
         remove("Doctor.txt");
         rename("temp.txt", "Doctor.txt");
 
-        cout << "Dr. " << username << "removed successfully!" << endl;
+        cout << "Dr. " << username << " removed successfully!" << endl;
     }
 };
 
